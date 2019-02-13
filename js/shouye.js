@@ -76,7 +76,7 @@ function move2() {
 	}
 }
 //必抢清单开始
-let zjianlist = document.querySelector(".qingdan ul .tu1 .bottom .icz");
+/* let zjianlist = document.querySelector(".qingdan ul .tu1 .bottom .icz");
 let yjianlist = document.querySelector(".qingdan ul .tu1 .bottom .icy");
 let zhongjianlist = document.querySelector(".qingdan ul .tu1 .bottom ul");
 let yuanlist = document.querySelectorAll(".qingdan ul .tu1 .bottom .dian-box div");
@@ -132,7 +132,76 @@ for (let i = 0; i <= size; i++) {
 		m = i;
 		move();
 	}
+} */
+
+let bigbox = document.querySelector(".qingdan ul .tu1 .bottom ul");
+let box = document.querySelector(".qingdan ul .tu1")
+let N = 1;
+let Time;                         //移动的定时器
+let flag = true;                  //开关
+let leftBtn = document.querySelector(".qingdan ul .tu1 .bottom .icz")
+let rightBtn = document.querySelector(".qingdan ul .tu1 .bottom .icy")
+let direction = 1;
+let yuanlist = document.querySelectorAll(".qingdan ul .tu1 .bottom .dian-box div");
+let size = yuanlist.length - 1;
+start();
+function move(){
+	bigbox.style.left = -N*390+"px";
+	bigbox.style.transition = "all 0.5s";
+	yuanlist.forEach(function(val) {
+		val.classList.remove("active");
+		yuanlist[N].classList.add("active");
+	});
 }
+bigbox.addEventListener("transitionend",function(){            //动画结束之后执行以下条件
+	flag = true;
+	if(N>=4){
+		bigbox.style.transition = "none";
+		bigbox.style.left = "-100%";
+		N=1;
+	}else if(N<=0){
+		bigbox.style.transition = "none";
+		bigbox.style.left = "-500%";
+		N=5;
+	}
+})
+leftBtn.onclick = function(){
+	if(flag){
+		direction = -1;
+		flag= false;
+		N--;
+		move();
+	}
+}
+rightBtn.onclick = function(){
+	if(flag){
+		direction = 1;
+		flag = false;
+		N++;
+		move();
+	}
+}
+for (let i = 0; i <= size; i++) {
+	yuanlist[i].onclick = function() {
+		N = i;
+		move();
+	}
+}
+function stop(){
+	clearInterval(Time)
+}
+function start(){
+	Time = setInterval(function(){
+		N = N + direction;
+		move()
+	},1000)
+}
+box.onmouseover = stop;
+box.onmouseout = start;
+window.onblur = stop;
+window.onfocus = start;
+
+
 /* 零食选项卡开始 */
 let toplist = document.querySelectorAll(".qingdan ul .tu3 .bottom .shang .list div");
 let bottomlis = document.querySelectorAll(".qingdan ul .tu3 .bottom .xia .blist .item");
@@ -147,10 +216,10 @@ toplist.forEach((val, index) => {
 	}
 });
 /* 点击切换 */
-let Zjianlist = document.querySelector(".qingdan ul .tu3 .bottom .xia .icleft");
-let Yjianlist = document.querySelector(".qingdan ul .tu3 .bottom .xia .icright");
+let Zjianlist = document.querySelector(".qingdan ul .tu3 .bottom .xia .blist .one .icleft");
+let Yjianlist = document.querySelector(".qingdan ul .tu3 .bottom .xia .blist .one .icright");
 let bigboxlist = document.querySelector(".qingdan ul .tu3 .bottom .xia .blist .item .bigbox");
-let dianlist = document.querySelectorAll(".qingdan ul .tu3 .bottom .xia .dian-box div");
+let dianlist = document.querySelectorAll(".qingdan ul .tu3 .bottom .xia .blist .one .dian-box div");
 let M = 0;
 let Size = dianlist.length - 1;
 function move1() {
@@ -161,7 +230,7 @@ function move1() {
 		M = 0;
 		return;
 	} else {
-		bigboxlist.style.left = -M * 350 + "px";
+		bigboxlist.style.left = -M * 390 + "px";
 		Yjianlist.style.cursor = "pointer";
 		Zjianlist.style.cursor = "pointer";
 	}
@@ -191,9 +260,7 @@ for (let i = 0; i <= Size; i++) {
 }
 // 预告开始
 let rightlist = document.querySelectorAll(".goodslist .right .shang .right ul li");
-console.log(rightlist)
 let leftlist = document.querySelectorAll(".goodslist .right .shang .left ul li");
-console.log(leftlist)
 rightlist.forEach((val, index) => {
 	val.onmouseover = function() {
 		rightlist.forEach((ele, key) => {
