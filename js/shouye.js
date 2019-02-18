@@ -76,64 +76,6 @@ function move2() {
 	}
 }
 //必抢清单开始
-/* let zjianlist = document.querySelector(".qingdan ul .tu1 .bottom .icz");
-let yjianlist = document.querySelector(".qingdan ul .tu1 .bottom .icy");
-let zhongjianlist = document.querySelector(".qingdan ul .tu1 .bottom ul");
-let yuanlist = document.querySelectorAll(".qingdan ul .tu1 .bottom .dian-box div");
-let boxlist = document.querySelector(".qingdan ul .tu1");
-let m = 0;
-let size = yuanlist.length - 1;
-function move() {
-	if (m > size) {
-		m = 0;
-		return;
-	} else if (m < 0) {
-		m = size;
-		return;
-	} else {
-		zhongjianlist.style.left = -m * 390 + "px";
-		yjianlist.style.cursor = "pointer";
-		zjianlist.style.cursor = "pointer";
-	}
-	if (m == size) {
-		yjianlist.style.cursor = "default";
-	} else if (m == 0) {
-		zjianlist.style.cursor = "default";
-	}
-	yuanlist.forEach(function(val) {
-		val.classList.remove("active");
-		yuanlist[m].classList.add("active");
-	});
-}
-
-boxlist.onmouseover = function() {
-	clearInterval(time1);
-}
-boxlist.onmouseout = function() {
-	time = setInterval(function() {
-		m++;
-		move();
-	}, 2000);
-}
-let time1 = setInterval(function() {
-	m++;
-	move();
-}, 2000); 
-yjianlist.onclick = function() {
-	m++;
-	move();
-}
-zjianlist.onclick = function() {
-	m--;
-	move();
-}
-for (let i = 0; i <= size; i++) {
-	yuanlist[i].onclick = function() {
-		m = i;
-		move();
-	}
-} */
-
 let bigbox = document.querySelector(".qingdan ul .tu1 .bottom ul");
 let box = document.querySelector(".qingdan ul .tu1")
 let N = 1;
@@ -271,8 +213,62 @@ rightlist.forEach((val, index) => {
 		leftlist[index].style.display = "block";
 	}
 });
-
-
-
-
-
+//楼层跳转
+let left = document.querySelectorAll(".zuoce ul li");
+let right = document.querySelectorAll(".dazhongjian .louceng");
+let root1 = document.documentElement;
+let speed = 5;
+let Maxscroll = root1.offsetHeight - window.innerHeight;
+let flag1 = true;
+let maodian = document.querySelector(".zuoce");
+let shouji = document.querySelector(".goodslist");
+left.forEach(function(val, index) {
+	val.onclick = function() {
+		flag1 = false;
+		left.forEach(function(ele) {
+			ele.classList.remove("active");
+		});
+		left[index].classList.add("active");
+		if (root1.scrollTop + speed > right[index].offsetTop) {
+			speed = -15;
+		} else {
+			speed = 15;
+		}
+		let time = setInterval(function() {
+			if (root1.scrollTop + speed >= right[index].offsetTop && speed > 0) {
+				root1.scrollTop = right[index].offsetTop;
+				clearInterval(time);
+				flag1 = true;
+			} else if (speed < 0 && root1.scrollTop + speed <= right[index].offsetTop) {
+				root1.scrollTop = right[index].offsetTop;
+				clearInterval(time);
+				flag1 = true;
+			} else if (speed > 0 && Maxscroll <= root1.scrollTop) {
+				clearInterval(time);
+				flag1 = true;
+			} else {
+				root1.scrollTop = root1.scrollTop + speed;
+			}
+		},5);
+	}
+});
+window.onscroll = function() {
+	if (flag1) {
+		right.forEach(function(val, index) {
+			if (root1.scrollTop >= val.offsetTop && root1.scrollTop < val.offsetTop + val.offsetHeight) {
+				left[index].classList.add("active");
+			} else {
+				left[index].classList.remove("active");
+			}
+		});
+	}
+	if (root1.scrollTop >= shouji.offsetTop + shouji.offsetHeight) {
+		setTimeout(function() {
+			if (root1 == document.documentElement && root1.scrollTop != 0) {
+				maodian.style.display = "block";
+			}
+		}, 1000);
+	} else if (root1.scrollTop < shouji.offsetTop + shouji.offsetHeight) {
+		maodian.style.display = "none";
+	}
+}
